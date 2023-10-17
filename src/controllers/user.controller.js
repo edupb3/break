@@ -1,4 +1,3 @@
-const { default: mongoose } = require("mongoose");
 const userService = require("../services/user.service");
 
 const create = async (req, res) => {
@@ -36,31 +35,40 @@ const findAll = async (req, res) => {
     return res.status(200).send(users);
 }
 
-const findById = async (req, res) => {
-    const id = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(400).send({message: "Id not valid"})
-    }
-
-    const user = await userService.findById(id);  
-
-    if(!user){
-        return res.status(401).send({message: "User not found"})
-    }
-
+const findById = async (req, res) => {    
+    const user = req.user;
+    
     return res.send(user);
 }
 
 const update = async (req, res) => {
-    const id = req.params.id;
     const body = req.body;
-    const user = await userService.update(id, body);
-    if(!user){
-        return res.status(401).send({message: "Method Not Allowed"})
+    
+    const {name, username, email, password, avatar, background} = body;  
+
+    if(!name && !username && !email && !password && !avatar && !background){
+        return res.status(400).send({
+            message:"Submit at least one field for update"
+        })
     }
+    const id = req.params.id;
+    
+    const user = await userService.findById(id);    
+
+    if(!user){
+        return res.status(400).send({message: "User not found"})
+    }
+    await userService.update(
+        id, 
+        name, 
+        username, 
+        email, 
+        avatar, 
+        background
+    )
+
     return res.status(204).send({
-        message:"User update successfully"        
+        message:"User successfully update"        
     });
 }
 
