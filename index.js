@@ -1,8 +1,13 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
+const connectDatabase = require("./src/database/db");
 
-app.get('/', function (req, res) {
-  res.send('Hello World')
-})
+const userRoute = require('./src/routes/user.route');
 
-app.listen(3000)
+const port = 3000;
+
+connectDatabase();
+app.use(express.json());
+app.use('/user', userRoute);
+
+app.listen(3000,() => console.log(`localhost executando na porta ${port}`) )
