@@ -10,9 +10,10 @@ const update = (
     id,
     name,
     username,
+    password,
     email,
     avatar,
-    background) => User.findOneAndUpdate({ _id: id }, { name, username, email, avatar, background });
+    background) => User.findOneAndUpdate({ _id: id }, { name, username, password, email, avatar, background });
 
 export default {
     create,

@@ -66,18 +66,25 @@ const update = async (req, res) => {
         if (!user) {
             return res.status(400).send({ message: "User not found" })
         }
-        await userService.update(
-            id,
-            name,
-            username,
-            email,
-            avatar,
-            background
-        )
+        // Verifique se a senha está sendo atualizada
+        if (body.password) {
+            user.password = body.password; // Defina a nova senha no documento do usuário
+        }
+
+        // Atualize outros campos do usuário
+        user.name = body.name || user.name;
+        user.username = body.username || user.username;
+        user.email = body.email || user.email;
+        user.avatar = body.avatar || user.avatar;
+        user.background = body.background || user.background;
+
+        // Salve o usuário, o middleware de criptografia da senha será executado automaticamente
+        await user.save();
 
         return res.status(204).send({
-            message: "User successfully update"
+            message: "User successfully updated"
         });
+
     } catch (err) {
         res.status(500).send({ message: err.message })
     }
