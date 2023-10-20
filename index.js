@@ -1,13 +1,13 @@
-const express = require('express');
+import express from 'express';
+import connectDatabase from './src/database/db.js';
+import userRoute from './src/routes/user.route.js';
+
 const app = express();
-const connectDatabase = require("./src/database/db");
-
-const userRoute = require('./src/routes/user.route');
-
 const port = 3000;
 
 connectDatabase();
+
 app.use(express.json());
 app.use('/user', userRoute);
 
-app.listen(3000,() => console.log(`localhost executando na porta ${port}`) )
+app.listen(3000, () => console.log(`localhost executando na porta ${port}`))

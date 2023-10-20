@@ -1,26 +1,34 @@
-const { default: mongoose } = require("mongoose");
-const userService = require("../services/user.service");
+import mongoose from "mongoose";
+import userService from "../services/user.service.js";
 
-const validId = (req, res, next) => {
-    const id = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(400).send({message: "Id is not valid"})
+export const validId = (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send({ message: "Id is not valid" })
+        }
+
+        next();
+    } catch (err) {
+        res.status(500).send({ message: err.message })
     }
-
-    next();
 }
 
-const validUser = async (req, res, next) => {
-    const id = req.params.id;
-    const user = await userService.findById(id);  
+export const validUser = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const user = await userService.findById(id);
 
-    if(!user){
-        return res.status(401).send({message: "User not found"})
+        if (!user) {
+            return res.status(401).send({ message: "User not found" })
+        }
+
+        req.user = user;
+
+        next();
+    } catch (err) {
+        res.status(500).send({ message: err.message })
     }
-
-    req.user = user;
-
-    next();
 }
 
-module.exports = {validId, validUser};
+//export default { validId, validUser };
