@@ -1,20 +1,21 @@
-const User = require("../models/User");
+import User from "../models/User.js";
 
 const create = body => User.create(body);
 
-const findAll = () => User.find();
+const findAll = () => User.find().select("+password");
 
 const findById = id => User.findById(id);
 
 const update = (
-    id, 
-    name, 
-    username, 
-    email, 
-    avatar, 
-    background) => User.findOneAndUpdate({_id:id}, {name, username, email, avatar, background});
+    id,
+    name,
+    username,
+    password,
+    email,
+    avatar,
+    background) => User.findOneAndUpdate({ _id: id }, { name, username, password, email, avatar, background });
 
-module.exports = {
+export default {
     create,
     findAll,
     findById,
