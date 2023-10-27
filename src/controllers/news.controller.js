@@ -14,7 +14,7 @@ const create = async (req, res) => {
             title,
             text,
             banner,
-            user: { _id: '65294ebc98a302e2d726e9ec' }
+            user: { _id: req.userId }
         });
 
         if (!news) {
@@ -23,10 +23,7 @@ const create = async (req, res) => {
 
         return res.status(201).send({
             message: "news created succesfully",
-            news: {
-                id: news._id,
-                title, text, banner
-            }
+            news
         })
 
     } catch (err) {
