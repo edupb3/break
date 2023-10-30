@@ -13,22 +13,52 @@ export const userAuthenticate = async (req, res, next) => {
         if (header[0] != 'Bearer') {
             return res.status(401).send({ message: "Invalid Token" });
         }
-        const token = header[1];
-        const decoded = Jwt.verify(token, process.env.JWT_SECRET)
 
-        if (!decoded) {
-            return res.status(401).send({ message: "Invalid Token" });
-        }
 
-        const user = await userService.findById(decoded.id);
+        const [scheme, token] = header;
 
-        if (!user && !user.id) {
-            return res.status(401).send({ message: "User not found" })
-        }
+        if (!/^Bearer$/i.test(scheme))
+            return res.status(401).send({ message: "Malformatted Token!" });
 
-        req.userId = user.id;
+        Jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+            if (err) return res.status(401).send({ message: "Invalid token!" + err });
 
-        next();
+            const user = await userService.findById(decoded.id);
+            if (!user || !user.id)
+                return res.status(401).send({ message: "Invalid token!" });
+
+            req.userId = user.id;
+
+            return next();
+        });
+
+
+
+
+
+
+
+
+
+
+        // console.log("1")
+        // const token = header[1];
+        // const decoded = Jwt.verify(token, process.env.JWT_SECRET)
+        // console.log("2")
+
+        // if (!decoded) {
+        //     return res.status(401).send({ message: "Invalid Token" });
+        // }
+
+        // const user = await userService.findById(decoded.id);
+
+        // if (!user && !user.id) {
+        //     return res.status(401).send({ message: "User not found" })
+        // }
+
+        // req.userId = user.id;
+
+        // next();
     } catch (err) {
         res.status(500).send({ message: err.message })
     }

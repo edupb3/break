@@ -4,6 +4,6 @@ import { userAuthenticate } from '../middlewares/auth.middleware.js';
 
 const route = express.Router();
 route.post("/", userAuthenticate, create);
-route.get("/", findAll);
+route.get("/", userAuthenticate, findAll);
 
 export default route;
