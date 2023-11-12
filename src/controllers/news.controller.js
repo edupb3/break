@@ -1,4 +1,4 @@
-import { createService, findAllService, getQtdRegisters } from "../services/news.service.js";
+import { createService, findAllService, getQtdRegisters, findTopNewsService } from "../services/news.service.js";
 
 
 const create = async (req, res) => {
@@ -81,7 +81,33 @@ const findAll = async (req, res) => {
     }
 }
 
+const findTopNews = async (req, res) => {
+    try {
+        const news = await findTopNewsService();
+        if (!news) {
+            return res.status(401).send({ message: "There is no registered found" })
+        }
+        return res.send({
+            news: {
+                id: news._id,
+                title: news.title,
+                text: news.text,
+                banner: news.banner,
+                likes: news.likes,
+                comments: news.comments,
+                name: news.user.name,
+                userAvatar: news.user.avatar,
+                background: news.user.background
+            }
+        })
+    } catch (err) {
+        res.status(500).send({ message: err.message })
+    }
+}
+
+
 export {
     create,
-    findAll
+    findAll,
+    findTopNews
 }

@@ -11,8 +11,11 @@ const findAllService = (limit = 3, offset = 0) => {
 }
 const getQtdRegisters = () => News.countDocuments();
 
+const findTopNewsService = () => News.findOne().sort({ _id: -1 }).populate("user");
+
 export {
     createService,
     findAllService,
-    getQtdRegisters
+    getQtdRegisters,
+    findTopNewsService
 }
